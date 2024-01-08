@@ -1,0 +1,15 @@
+@media only screen and (min-width: 100px) and (max-width: 500px) {
+
+  /* for mobile view */
+
+  .index-video-banner video {
+    height: 150vh !important;
+    /* You can adjust this value as needed */
+  }
+
+  .fixed-size-image-guides {
+    width: 388px !important;
+    object-fit: cover !important;
+    /* To maintain the aspect ratio and cover the container */
+  }
+}

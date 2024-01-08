@@ -1,0 +1,164 @@
+////////////////////////////   FOR WATEEN    ////////////////////////////////////////////////////
+
+
+//auth tables
+DROP TABLE IF EXISTS `groups`;
+
+
+#
+# Table structure for table 'groups'
+#
+
+CREATE TABLE `groups` (
+  `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(20) NOT NULL,
+  `description` varchar(100) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+#
+# Dumping data for table 'groups'
+#
+
+INSERT INTO `groups` (`id`, `name`, `description`) VALUES
+     (1,'admin','Administrator'),
+     (2,'members','General User');
+
+
+
+DROP TABLE IF EXISTS `users`;
+
+#
+# Table structure for table 'users'
+#
+
+CREATE TABLE `users` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `ip_address` varchar(45) NOT NULL,
+  `username` varchar(100) NULL,
+  `password` varchar(255) NOT NULL,
+  `email` varchar(254) NOT NULL,
+  `activation_selector` varchar(255) DEFAULT NULL,
+  `activation_code` varchar(255) DEFAULT NULL,
+  `forgotten_password_selector` varchar(255) DEFAULT NULL,
+  `forgotten_password_code` varchar(255) DEFAULT NULL,
+  `forgotten_password_time` int(11) unsigned DEFAULT NULL,
+  `remember_selector` varchar(255) DEFAULT NULL,
+  `remember_code` varchar(255) DEFAULT NULL,
+  `created_on` int(11) unsigned NOT NULL,
+  `last_login` int(11) unsigned DEFAULT NULL,
+  `active` tinyint(1) unsigned DEFAULT NULL,
+  `first_name` varchar(50) DEFAULT NULL,
+  `last_name` varchar(50) DEFAULT NULL,
+  `company` varchar(100) DEFAULT NULL,
+  `phone` varchar(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `uc_email` UNIQUE (`email`),
+  CONSTRAINT `uc_activation_selector` UNIQUE (`activation_selector`),
+  CONSTRAINT `uc_forgotten_password_selector` UNIQUE (`forgotten_password_selector`),
+  CONSTRAINT `uc_remember_selector` UNIQUE (`remember_selector`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+#
+# Dumping data for table 'users'
+#
+
+INSERT INTO `users` (`id`, `ip_address`, `username`, `password`, `email`, `activation_code`, `forgotten_password_code`, `created_on`, `last_login`, `active`, `first_name`, `last_name`, `company`, `phone`) VALUES
+     ('1','127.0.0.1','administrator','$2y$08$200Z6ZZbp3RAEXoaWcMA6uJOFicwNZaqk4oDhqTUiFXFe63MG.Daa','admin@admin.com','',NULL,'1268889823','1268889823','1', 'Admin','istrator','ADMIN','0');
+
+
+DROP TABLE IF EXISTS `users_groups`;
+
+#
+# Table structure for table 'users_groups'
+#
+
+CREATE TABLE `users_groups` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) unsigned NOT NULL,
+  `group_id` mediumint(8) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_users_groups_users1_idx` (`user_id`),
+  KEY `fk_users_groups_groups1_idx` (`group_id`),
+  CONSTRAINT `uc_users_groups` UNIQUE (`user_id`, `group_id`),
+  CONSTRAINT `fk_users_groups_users1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `fk_users_groups_groups1` FOREIGN KEY (`group_id`) REFERENCES `groups` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `users_groups` (`id`, `user_id`, `group_id`) VALUES
+     (1,1,1),
+     (2,1,2);
+
+
+DROP TABLE IF EXISTS `login_attempts`;
+
+#
+# Table structure for table 'login_attempts'
+#
+
+CREATE TABLE `login_attempts` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `ip_address` varchar(45) NOT NULL,
+  `login` varchar(100) NOT NULL,
+  `time` int(11) unsigned DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE `pages` ( `id` INT(11) NOT NULL AUTO_INCREMENT , `banner_image` VARCHAR(255) NOT NULL , `heading` TEXT NOT NULL , `sub_heading` TEXT NOT NULL , `meta_title` TEXT NOT NULL , `meta_description` TEXT NOT NULL , `meta_keywords` TEXT NOT NULL , `canonical_url` VARCHAR(255) NOT NULL , `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , `is_active` INT(2) NOT NULL DEFAULT '1' , PRIMARY KEY (`id`)) ENGINE = InnoDB
+ALTER TABLE `pages` ADD `entity` INT NULL DEFAULT NULL AFTER `id`;
+
+CREATE TABLE `testimonials` ( `id` INT(11) NOT NULL AUTO_INCREMENT , `name` VARCHAR(100) NULL DEFAULT NULL , `hair_type` VARCHAR(100) NULL DEFAULT NULL , `concern` VARCHAR(100) NULL DEFAULT NULL , `age` INT(11) NULL DEFAULT NULL , `location` VARCHAR(100) NULL DEFAULT NULL , `description` TEXT NULL DEFAULT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+ 
+ ALTER TABLE `testimonials` ADD `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `description`, ADD `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `created_at`, ADD `is_active` INT(2) NOT NULL DEFAULT '1' AFTER `updated_at`;
+
+ ALTER TABLE `testimonials` ADD `image` TEXT NULL DEFAULT NULL AFTER `name`;
+
+ALTER TABLE `testimonials` ADD `designation` VARCHAR(255) NULL DEFAULT NULL AFTER `name`;
+ALTER TABLE `testimonials` CHANGE `description` `review` TEXT CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL;
+ALTER TABLE `testimonials`
+  DROP `designation`,
+  DROP `hair_type`,
+  DROP `concern`;
+
+CREATE TABLE `packages` ( `id` INT NOT NULL AUTO_INCREMENT , `pakage_name` VARCHAR(100) NOT NULL , `place_name` VARCHAR(100) NULL DEFAULT NULL , `image` TEXT NULL DEFAULT NULL , `description` TEXT NULL DEFAULT NULL , `images` TEXT NULL DEFAULT NULL , `departure_location` VARCHAR(100) NULL DEFAULT NULL , `Pickup` VARCHAR(100) NULL DEFAULT NULL , `max_people` VARCHAR(100) NULL DEFAULT NULL , `total_days` VARCHAR(100) NULL DEFAULT NULL , `is_active` INT NOT NULL DEFAULT '1' , `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , PRIMARY KEY (`id`)) ENGINE = InnoDB;  
+ALTER TABLE `packages` ADD `meta_title` VARCHAR(255) NULL DEFAULT NULL AFTER `total_days`, ADD `meta_keywords` VARCHAR(255) NULL DEFAULT NULL AFTER `meta_title`, ADD `canonical_url` VARCHAR(255) NULL DEFAULT NULL AFTER `meta_keywords`, ADD `meta_description` TEXT NULL DEFAULT NULL AFTER `canonical_url`;
+ALTER TABLE `packages` ADD `slug` VARCHAR(255) NULL DEFAULT NULL AFTER `pakage_name`;
+ALTER TABLE `packages` ADD `thumbnail_image` TEXT NULL DEFAULT NULL AFTER `image`;
+ALTER TABLE `packages` CHANGE `pakage_name` `package_name` VARCHAR(100) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL;
+
+CREATE TABLE `blogs` ( `id` INT(11) NOT NULL AUTO_INCREMENT , `title` VARCHAR(255) NULL DEFAULT NULL , `description` TEXT NULL DEFAULT NULL , `main_image` TEXT NULL DEFAULT NULL , `slug` VARCHAR(255) NULL DEFAULT NULL , `category` INT(11) NULL DEFAULT NULL , `tags` VARCHAR(255) NULL DEFAULT NULL , `meta_title` VARCHAR(255) NULL DEFAULT NULL , `meta_description` TEXT NULL DEFAULT NULL , `meta_keywords` VARCHAR(255) NULL DEFAULT NULL , `canonical_url` TEXT NULL DEFAULT NULL , `is_deleted` TINYINT(1) NOT NULL DEFAULT '0' , `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , `deleted_at` TIMESTAMP NULL DEFAULT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB
+CREATE TABLE `blog_tags` ( `id` INT NOT NULL AUTO_INCREMENT , `title` VARCHAR(255) NOT NULL , `description` TEXT NULL DEFAULT NULL , `slug` VARCHAR(255) NULL DEFAULT NULL , `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , `is_deleted` TINYINT(4) NOT NULL DEFAULT '0' , `deleted_at` TIMESTAMP NULL DEFAULT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB
+CREATE TABLE `blog_categories` ( `id` INT(11) NOT NULL AUTO_INCREMENT , `title` VARCHAR(255) NULL DEFAULT NULL , `description` TEXT NULL DEFAULT NULL , `slug` VARCHAR(255) NULL DEFAULT NULL , `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , `is_deleted` TINYINT(4) NOT NULL DEFAULT '0' , `deleted_at` TIMESTAMP NULL DEFAULT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB
+ALTER TABLE `blogs` ADD `thumbnail_image` TEXT NULL DEFAULT NULL AFTER `main_image`
+
+
+
+CREATE TABLE `guides` ( `id` INT NOT NULL AUTO_INCREMENT , `name` VARCHAR(255) NOT NULL , `age` INT(11) NULL DEFAULT NULL , `speciality` VARCHAR(255) NULL DEFAULT NULL , `review` VARCHAR(100) NULL DEFAULT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+ALTER TABLE `guides` ADD `image` TEXT NULL DEFAULT NULL AFTER `name`;
+ALTER TABLE `guides` ADD `is_active` INT NOT NULL DEFAULT '1' AFTER `review`, ADD `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `is_active`, ADD `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `created_at`;
+
+CREATE TABLE `faqs` ( `id` INT(11) NOT NULL AUTO_INCREMENT , `entity_id` INT(11) NULL DEFAULT NULL , `entity` INT(11) NULL DEFAULT NULL , `question` VARCHAR(255) NULL DEFAULT NULL , `answer` TEXT NULL DEFAULT NULL , `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , `is_deleted` TINYINT(2) NULL DEFAULT NULL , `deleted_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+
+ALTER TABLE `faqs` CHANGE `is_deleted` `is_active` INT(2) NOT NULL DEFAULT '1';
+
+ALTER TABLE packages ADD COLUMN mrp DECIMAL(10,2) NULL DEFAULT NULL, ADD COLUMN discount INT(11) NULL DEFAULT NULL, ADD COLUMN final_amount DECIMAL(10,2) NULL DEFAULT NULL
+
+-------------------------------------All changes done on Live---------------------------------------------------
+
+CREATE TABLE `db_wateen`.`gallery` ( `id` INT NOT NULL AUTO_INCREMENT , `place` INT(11) NOT NULL , `image` TEXT NOT NULL , `meta_title` VARCHAR(100) NULL DEFAULT NULL , `meta_description` VARCHAR(100) NULL DEFAULT NULL , `meta_keywords` VARCHAR(100) NULL , `canonical_url` VARCHAR(100) NULL , `is_active` INT NOT NULL DEFAULT '1' , `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+ALTER TABLE `gallery` ADD `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `created_at`;
+ALTER TABLE `packages` CHANGE `departure_location` `departure` VARCHAR(100) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL;
+ALTER TABLE `packages` CHANGE `place_name` `ziyarat` VARCHAR(100) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL;
+ALTER TABLE `packages` CHANGE `Pickup` `hotel` VARCHAR(100) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL;
+ALTER TABLE `packages` CHANGE `max_people` `guide` VARCHAR(100) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL;
+ALTER TABLE `packages` ADD `meals` VARCHAR(100) NULL DEFAULT NULL AFTER `guide`, ADD `flight` VARCHAR(100) NULL DEFAULT NULL AFTER `meals`, ADD `visa` VARCHAR(100) NULL DEFAULT NULL AFTER `flight`, ADD `transport` VARCHAR(100) NULL DEFAULT NULL AFTER `visa`;
+ALTER TABLE `packages` ADD `day_details` VARCHAR(100) NULL DEFAULT NULL AFTER `total_days`;
+ALTER TABLE `packages` CHANGE `hotel` `hotel_location` VARCHAR(100) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL;
+ALTER TABLE `packages` ADD `hotel_names` VARCHAR(100) NULL DEFAULT NULL AFTER `hotel_location`;
+ALTER TABLE `packages` CHANGE `hotel_names` `hotel_names` TEXT CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL;
+ALTER TABLE `packages` ADD `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `created_at`;
+
+
+
